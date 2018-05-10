@@ -85,7 +85,7 @@ app.get('/update-date', async (req, res) => {
 
 app.post('/register', async (req, res) => {
   try{
-    getRegister(req.body);
+    await getRegister(req.body);
     res.sendStatus(200)
   } catch (error) {
     console.error('Search failed:', error)
