@@ -38,6 +38,7 @@ app.set('port', PORT)
 app.listen(app.get('port'), () => {
   console.log('Server start....')
   console.log('Run on PORT : ', app.get('port'))
+  console.log('URL: ', app.get('host'))
 })
 app.get('/', (req, res) => {
   res.send('Class Checking API')
