@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const PORT = process.env.PORT || 5000
 const timeout = require('connect-timeout'); //express v4
+const bodyParser = require('body-parser')
 
 const mailer = require('gmail-send');
 const xlsx = require('xlsx');
@@ -12,7 +13,6 @@ const Nightmare = require('nightmare')
 const nightmare = Nightmare({ show: true })
 
 const serviceAccount = require('./classchecking-c66d9-09d316fdeec2.json');
-const bodyParser = require('body-parser')
 moment.locale('th')
 const app = express()
 app.use(cors({ origin: false }))
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
 app.use(timeout(120000));
 app.use(haltOnTimedout);
 
-haltOnTimedout = (req, res, next) => {
+function haltOnTimedout (req, res, next) {
   if (!req.timedout) next();
 }
 
