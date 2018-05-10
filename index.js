@@ -8,7 +8,7 @@ const moment = require('moment')
 const admin = require('firebase-admin');
 
 const Nightmare = require('nightmare')
-const nightmare = Nightmare({ show: false })
+const nightmare = Nightmare({ show: true })
 
 const serviceAccount = require('./classchecking-c66d9-09d316fdeec2.json');
 const bodyParser = require('body-parser')
