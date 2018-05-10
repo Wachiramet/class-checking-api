@@ -16,6 +16,5 @@
     "moment": "^2.22.1",
     "nightmare": "^3.0.1",
     "xlsx": "^0.12.11"
-  },
-  "private": true
+  }
 }
