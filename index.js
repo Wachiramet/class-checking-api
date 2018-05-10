@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const PORT = process.env.PORT || 5000
+const timeout = require('connect-timeout'); //express v4
 
 const mailer = require('gmail-send');
 const xlsx = require('xlsx');
@@ -19,6 +20,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(timeout(120000));
+app.use(haltOnTimedout);
+
+haltOnTimedout = (req, res, next) => {
+  if (!req.timedout) next();
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -74,71 +81,71 @@ app.get('/update-date', async (req, res) => {
 
 app.post('/register', async (req, res) => {
   try{
-    // const regi = req.body
+    const regi = req.body
 
-    // const result = await nightmare
-    //   .goto('http://klogic2.kmutnb.ac.th:8080/kris/index.jsp')
-    //   .wait(1000)
-    //   .type('input[name="username"]', '6WKN')
-    //   .wait(1000)
-    //   .type('input[name="password"]', '6WKN')
-    //   .wait(1000)
-    //   .click('input[type="submit"]')
-    //   .wait(1000)
-    //   .click('a[href="checkregpicker.jsp"]')
-    //   .wait(1000)
-    //   .type('input[name="student_code"]', '')
-    //   .wait(1000)
-    //   .type('input[name="student_code"]', regi['studentId'])
-    //   .wait(1000)
-    //   .click('input[name="do"]')
-    //   .wait(1000)
-    //   .evaluate(() => {
-    //     let register = {term: [], subject: []}
-    //       let x = document.getElementsByTagName('tr')
-    //       let nameTH = document.getElementsByTagName('table')[6].getElementsByTagName('td')[1].innerText.split(" ")
+    const result = await nightmare
+      .goto('http://klogic2.kmutnb.ac.th:8080/kris/index.jsp')
+      .wait('input[name="username"]')
+      .type('input[name="username"]', '6WKN')
+      .wait('input[name="password"]')
+      .type('input[name="password"]', '6WKN')
+      .wait('input[type="submit"]')
+      .click('input[type="submit"]')
+      .wait('a[href="checkregpicker.jsp"]')
+      .click('a[href="checkregpicker.jsp"]')
+      .wait('input[name="student_code"]')
+      .type('input[name="student_code"]', '')
+      .wait('input[name="student_code"]')
+      .type('input[name="student_code"]', regi['studentId'])
+      .wait('input[name="do"]')
+      .click('input[name="do"]')
+      .wait('form[name="pickSemYearForm"]')
+      .evaluate(() => {
+        let register = {term: [], subject: []}
+          let x = document.getElementsByTagName('tr')
+          let nameTH = document.getElementsByTagName('table')[6].getElementsByTagName('td')[1].innerText.split(" ")
 
-    //       for (let z = 0; z < x.length; z++) {
-    //         if (x[z].getElementsByTagName('td').length === 4) {
-    //           if (x[z].getElementsByTagName('td')[2].innerText.includes('ภาค/ปีการศึกษาปัจจุบัน')) {
-    //             let data = x[z].getElementsByTagName('td')[2].innerText.trim().split(' ')[1].split('/')
-    //             register.term = data
-    //           }
-    //         }
+          for (let z = 0; z < x.length; z++) {
+            if (x[z].getElementsByTagName('td').length === 4) {
+              if (x[z].getElementsByTagName('td')[2].innerText.includes('ภาค/ปีการศึกษาปัจจุบัน')) {
+                let data = x[z].getElementsByTagName('td')[2].innerText.trim().split(' ')[1].split('/')
+                register.term = data
+              }
+            }
 
-    //         if (x[z].getElementsByTagName('td').length === 10) {
+            if (x[z].getElementsByTagName('td').length === 10) {
 
-    //           let data = {
-    //             nameTH : nameTH[1] + " " + nameTH[2],
-    //             subjectId: x[z].getElementsByTagName('td')[1].innerText,
-    //             section: x[z].getElementsByTagName('td')[2].innerText.trim(),
-    //             subjectName: x[z].getElementsByTagName('td')[3].innerText,
-    //             time : x[z].getElementsByTagName('td')[8].innerText
-    //           }
-    //           register.subject.push(data)
-    //         }
+              let data = {
+                nameTH : nameTH[1] + " " + nameTH[2],
+                subjectId: x[z].getElementsByTagName('td')[1].innerText,
+                section: x[z].getElementsByTagName('td')[2].innerText.trim(),
+                subjectName: x[z].getElementsByTagName('td')[3].innerText,
+                time : x[z].getElementsByTagName('td')[8].innerText
+              }
+              register.subject.push(data)
+            }
 
-    //         if (x[z].getElementsByTagName('td').length === 9) {
-    //           let data = {
-    //             nameTH : nameTH[1] + " " + nameTH[2],
-    //             subjectId: x[z].getElementsByTagName('td')[1].innerText,
-    //             section: x[z].getElementsByTagName('td')[2].innerText.trim(),
-    //             subjectName: x[z].getElementsByTagName('td')[3].innerText,
-    //             time : x[z].getElementsByTagName('td')[8].innerText
-    //           }
-    //           register.subject.push(data)
-    //         }
+            if (x[z].getElementsByTagName('td').length === 9) {
+              let data = {
+                nameTH : nameTH[1] + " " + nameTH[2],
+                subjectId: x[z].getElementsByTagName('td')[1].innerText,
+                section: x[z].getElementsByTagName('td')[2].innerText.trim(),
+                subjectName: x[z].getElementsByTagName('td')[3].innerText,
+                time : x[z].getElementsByTagName('td')[8].innerText
+              }
+              register.subject.push(data)
+            }
           
-    //       }
-    //       return register
-    //   })
-    //   .end()
-    // console.log(result)
-    // const ref = admin.database().ref(`/terms/register${result.term[0]}:${result.term[1].substring(2, 4)}`)
-    // for (let i = 0; i < result.subject.length; i++) {
-    //   ref.child(regi['uid']).child(i).set(result.subject[i])
-    //   ref.child(regi['uid']).child(i).child('status/firstReg').set(false)
-    // }
+          }
+          return register
+      })
+      .end()
+    console.log(result)
+    const ref = admin.database().ref(`/terms/register${result.term[0]}:${result.term[1].substring(2, 4)}`)
+    for (let i = 0; i < result.subject.length; i++) {
+      ref.child(regi['uid']).child(i).set(result.subject[i])
+      ref.child(regi['uid']).child(i).child('status/firstReg').set(false)
+    }
     res.sendStatus(200)
   } catch (error) {
     console.error('Search failed:', error)
