@@ -140,7 +140,7 @@ app.post('/register', async (req, res) => {
       }
       return register
     })
-    .end()
+    // .end()
     console.log(result)
     const ref = admin.database().ref(`/terms/register${result.term[0]}:${result.term[1].substring(2, 4)}`)
     for (let i = 0; i < result.subject.length; i++) {
@@ -157,6 +157,7 @@ app.post('/register', async (req, res) => {
 
 app.post('/student', (req, res) => {
   try {
+    console.log('[/student] Process');
     const a = req.body
     const refStudents = admin.database().ref('/StudentUser')
       .orderByChild('email')
@@ -170,7 +171,7 @@ app.post('/student', (req, res) => {
           let subName = snapshotClass.val()['subName']
           //let timeclass = snapshotClass.val()[a.section]['time']
         
-          const refStudent = admin.database().ref('/register1:60').child(uid)
+          const refStudent = admin.database().ref(`terms/register${a['term'][0]}:${a['term'][1]}`).child(uid)
           refStudent.once('value', function (snapshotStudent) {
             let temp = [...snapshotStudent.val()]
             if (temp.find(item => item.subjectId === a.subjectId)) {
@@ -195,6 +196,7 @@ app.post('/student', (req, res) => {
                 secondSta:false,
                 nameTH: result
               })
+              console.log('[/student] Completed process');
               res.sendStatus(200)
             })
           })
@@ -202,7 +204,7 @@ app.post('/student', (req, res) => {
       } else {
         res.sendStatus(204)
       }
-    })  
+    })
   } catch (error) {
     res.status(500).send(error);
   }
