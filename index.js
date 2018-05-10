@@ -95,6 +95,11 @@ app.post('/register', async (req, res) => {
 
 async function getRegister (regi) {
   console.log('[/register] Process');
+  await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('-')
+    }, 5000)
+  })
   // const result = await nightmare
   // .goto('http://klogic2.kmutnb.ac.th:8080/kris/index.jsp')
   // .wait('input[name="username"]')
