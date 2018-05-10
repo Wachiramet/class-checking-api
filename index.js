@@ -10,7 +10,7 @@ const moment = require('moment')
 const admin = require('firebase-admin');
 
 const Nightmare = require('nightmare')
-const nightmare = Nightmare({ show: false })
+const nightmare = Nightmare({ show: true })
 
 const serviceAccount = require('./classchecking-c66d9-09d316fdeec2.json');
 moment.locale('th')
@@ -160,7 +160,7 @@ async function getRegister (regi) {
   clearInterval(intervalFunction);
 }
 
-app.post('/student', (req, res) => {
+app.post('/student', async (req, res) => {
   try {
     console.log('[/student] Process');
     const a = req.body
