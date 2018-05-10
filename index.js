@@ -95,7 +95,7 @@ app.post('/register', async (req, res) => {
 
 async function getRegister (regi) {
   console.log('[/register] Process');
-  nightmare
+  let result = await nightmare
     .goto('http://klogic2.kmutnb.ac.th:8080/kris/index.jsp')
     .wait('input[name="username"]')
     .type('input[name="username"]', '6WKN')
@@ -151,17 +151,15 @@ async function getRegister (regi) {
       return register
     })
     .end()
-    .then((result) => {
-      console.log(result)
-      if (result) {
-        const ref = admin.database().ref(`/terms/register${result.term[0]}:${result.term[1].substring(2, 4)}`)
-        for (let i = 0; i < result.subject.length; i++) {
-          ref.child(regi['uid']).child(i).set(result.subject[i])
-          ref.child(regi['uid']).child(i).child('status/firstReg').set(false)
-        }
-      }
-      console.log('[/register] End process');
-    })
+  console.log(result)
+  // if (result) {
+  //   const ref = admin.database().ref(`/terms/register${result.term[0]}:${result.term[1].substring(2, 4)}`)
+  //   for (let i = 0; i < result.subject.length; i++) {
+  //     ref.child(regi['uid']).child(i).set(result.subject[i])
+  //     ref.child(regi['uid']).child(i).child('status/firstReg').set(false)
+  //   }
+  // }
+  console.log('[/register] End process');
 }
 
 app.post('/student', async (req, res) => {
