@@ -39,6 +39,9 @@ app.listen(app.get('port'), () => {
   console.log('Server start....')
   console.log('Run on PORT : ', app.get('port'))
 })
+app.get('/', (req, res) => {
+  res.send('Class Checking API')
+})
 
 app.get('/update-date', async (req, res) => {
   try {
